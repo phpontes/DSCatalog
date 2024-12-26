@@ -1,5 +1,9 @@
 package com.paulopontes.dscatalog.services;
 
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -44,23 +48,23 @@ public class ProductServiceTests {
 	@BeforeEach
 	void setUp() {
 		existingId = 1L;
-		nonExistingId = 1000L;
+		nonExistingId = 69L;
 		dependentId = 3L;
 		product = Factory.createProduct();
 		page = new PageImpl<>(List.of(product));
 		
-		Mockito.when(repository.findAll((Pageable)ArgumentMatchers.any())).thenReturn(page);
-		Mockito.when(repository.save(ArgumentMatchers.any())).thenReturn(product);
-		Mockito.when(repository.findById(existingId)).thenReturn(Optional.of(product));
-		Mockito.when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
+		when(repository.findAll((Pageable)ArgumentMatchers.any())).thenReturn(page);
+		when(repository.save(ArgumentMatchers.any())).thenReturn(product);
+		when(repository.findById(existingId)).thenReturn(Optional.of(product));
+		when(repository.findById(nonExistingId)).thenReturn(Optional.empty());
 		
-		Mockito.doNothing().when(repository).deleteById(existingId);
-		Mockito.doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
-		Mockito.doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
+		doNothing().when(repository).deleteById(existingId);
+		doThrow(EmptyResultDataAccessException.class).when(repository).deleteById(nonExistingId);
+		doThrow(DataIntegrityViolationException.class).when(repository).deleteById(dependentId);
 	
-		Mockito.when(repository.existsById(existingId)).thenReturn(true);
-		Mockito.when(repository.existsById(nonExistingId)).thenReturn(false);
-		Mockito.when(repository.existsById(dependentId)).thenReturn(true);
+		when(repository.existsById(existingId)).thenReturn(true);
+		when(repository.existsById(nonExistingId)).thenReturn(false);
+		when(repository.existsById(dependentId)).thenReturn(true);
 	}
 	
 	@Test
